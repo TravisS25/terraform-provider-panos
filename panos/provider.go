@@ -86,6 +86,9 @@ func Provider() terraform.ResourceProvider {
 			// Shared data sources.
 			"panos_address_object":                      dataSourceAddressObject(),
 			"panos_address_objects":                     dataSourceAddressObjects(),
+			"panos_address_groups":                      dataSourceAddressGroups(),
+			"panos_service_objects":                     dataSourceServiceObjects(),
+			"panos_service_groups":                      dataSourceServiceGroups(),
 			"panos_authentication_profiles":             dataSourceAuthenticationProfiles(),
 			"panos_anti_spyware_security_profile":       dataSourceAntiSpywareSecurityProfile(),
 			"panos_anti_spyware_security_profiles":      dataSourceAntiSpywareSecurityProfiles(),

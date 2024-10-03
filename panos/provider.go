@@ -89,6 +89,7 @@ func Provider() terraform.ResourceProvider {
 			"panos_address_groups":                      dataSourceAddressGroups(),
 			"panos_service_objects":                     dataSourceServiceObjects(),
 			"panos_service_groups":                      dataSourceServiceGroups(),
+			"panos_ethernet_interfaces":                 dataSourceEthernetInterfaces(),
 			"panos_authentication_profiles":             dataSourceAuthenticationProfiles(),
 			"panos_anti_spyware_security_profile":       dataSourceAntiSpywareSecurityProfile(),
 			"panos_anti_spyware_security_profiles":      dataSourceAntiSpywareSecurityProfiles(),

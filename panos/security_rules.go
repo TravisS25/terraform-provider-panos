@@ -448,6 +448,9 @@ func readSecurityPolicy(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	d.Set("device_group", dg)
+	d.Set("rulebase", base)
+	d.Set("vsys", vsys)
 	saveSecurityRules(d, listing)
 
 	return nil

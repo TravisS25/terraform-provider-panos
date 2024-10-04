@@ -505,6 +505,32 @@ func zoneSchema(isResource bool, rmKeys []string) map[string]*schema.Schema {
 				Type: schema.TypeString,
 			},
 		},
+		"enable_packet_buffer_protection": {
+			Type:        schema.TypeBool,
+			Description: "Enable packet buffer protection.",
+			Optional:    true,
+		},
+		"enable_device_identification": {
+			Type:        schema.TypeBool,
+			Description: "Enable device identification.",
+			Optional:    true,
+		},
+		"device_include_acls": {
+			Type:        schema.TypeList,
+			Description: "Devices from these addresses/subnets will be identified.",
+			Optional:    true,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+		},
+		"device_exclude_acls": {
+			Type:        schema.TypeList,
+			Description: "Devices from these addresses/subnets will not be identified.",
+			Optional:    true,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+		},
 	}
 
 	for _, rmKey := range rmKeys {
@@ -560,14 +586,18 @@ func zoneEntrySchema(withTmpl, withTs bool) map[string]*schema.Schema {
 
 func loadZone(d *schema.ResourceData) zone.Entry {
 	return zone.Entry{
-		Name:         d.Get("name").(string),
-		Mode:         d.Get("mode").(string),
-		ZoneProfile:  d.Get("zone_profile").(string),
-		LogSetting:   d.Get("log_setting").(string),
-		EnableUserId: d.Get("enable_user_id").(bool),
-		Interfaces:   asStringList(d.Get("interfaces").([]interface{})),
-		IncludeAcls:  asStringList(d.Get("include_acls").([]interface{})),
-		ExcludeAcls:  asStringList(d.Get("exclude_acls").([]interface{})),
+		Name:                         d.Get("name").(string),
+		Mode:                         d.Get("mode").(string),
+		ZoneProfile:                  d.Get("zone_profile").(string),
+		LogSetting:                   d.Get("log_setting").(string),
+		EnableUserId:                 d.Get("enable_user_id").(bool),
+		EnablePacketBufferProtection: d.Get("enable_packet_buffer_protection").(bool),
+		EnableDeviceIdentification:   d.Get("enable_device_identification").(bool),
+		Interfaces:                   asStringList(d.Get("interfaces").([]interface{})),
+		IncludeAcls:                  asStringList(d.Get("include_acls").([]interface{})),
+		ExcludeAcls:                  asStringList(d.Get("exclude_acls").([]interface{})),
+		DeviceIncludeAcls:            asStringList(d.Get("device_include_acls").([]interface{})),
+		DeviceExcludeAcls:            asStringList(d.Get("device_exclude_acls").([]interface{})),
 	}
 }
 
@@ -577,6 +607,8 @@ func saveZone(d *schema.ResourceData, o zone.Entry) {
 	d.Set("zone_profile", o.ZoneProfile)
 	d.Set("log_setting", o.LogSetting)
 	d.Set("enable_user_id", o.EnableUserId)
+	d.Set("enable_packet_buffer_protection", o.EnablePacketBufferProtection)
+	d.Set("enable_device_identification", o.EnableDeviceIdentification)
 	if err := d.Set("interfaces", o.Interfaces); err != nil {
 		log.Printf("[WARN] Error setting 'interfaces' param for %q: %s", d.Id(), err)
 	}
@@ -586,7 +618,12 @@ func saveZone(d *schema.ResourceData, o zone.Entry) {
 	if err := d.Set("exclude_acls", o.ExcludeAcls); err != nil {
 		log.Printf("[WARN] Error setting 'exclude_acls' param for %q: %s", d.Id(), err)
 	}
-
+	if err := d.Set("device_include_acls", o.DeviceIncludeAcls); err != nil {
+		log.Printf("[WARN] Error setting 'device_include_acls' param for %q: %s", d.Id(), err)
+	}
+	if err := d.Set("device_exclude_acls", o.DeviceExcludeAcls); err != nil {
+		log.Printf("[WARN] Error setting 'device_exclude_acls' param for %q: %s", d.Id(), err)
+	}
 }
 
 // Id functions.
